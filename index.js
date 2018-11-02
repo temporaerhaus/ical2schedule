@@ -89,6 +89,40 @@ comp.getAllSubcomponents("vevent").forEach(vevent => {
 	}
 });
 
+const parseDescription = (description) => {
+	let subtitle = description;
+	let subMatch = description.match(/^\u{1F5A5}\s*(.+)$/umg);
+	if (subMatch) {
+		subtitle = subMatch[subMatch.length - 1].replace(/\u{1F5A5}\s*/u, '').trim();
+		description.replace(subMatch[subMatch.length - 1], '');
+	}
+
+	let groups = [];
+	let groupMatch = description.match(/^\u{1F3E2}\s*(.+)$/mug);
+	if (groupMatch) {
+		groupMatch.forEach((m) => {
+			groups.push(m.replace(/\u{1F3E2}\s*/u, '').trim());
+			description.replace(m, '');
+		});
+	}
+
+	let people = [];
+	let personMatch = description.match(/^\u{1F642}\s*(.+)$/mug);
+	if (personMatch) {
+		personMatch.forEach((p) => {
+			people.push(p.replace(/\u{1F642}\s*/u, '').trim());
+			description.replace(p, '');
+		});
+	}
+
+	return {
+		description: description,
+		subtitle: subtitle,
+		groups: groups,
+		people: people
+	}
+};
+
 Object.keys(DATES)
 	.sort()
 	.forEach(function(key) {
@@ -147,6 +181,8 @@ Object.keys(DATES)
 					"minutes"
 				]);
 
+				let desc = parseDescription(event.description);
+
 				xmlevent.ele("date", realStartDate.toISO());
 				xmlevent.ele(
 					"start",
@@ -155,11 +191,14 @@ Object.keys(DATES)
 				xmlevent.ele("duration", diff.toFormat("hh:mm"));
 				xmlevent.ele("room", "Salon");
 				xmlevent.ele("title", event.summary);
-				xmlevent.ele("subtitle", event.description);
+				xmlevent.ele("subtitle", desc.subtitle);
 				var xmlpersons = xmlevent.ele("persons");
-				xmlpersons.ele("person", "FIXME");
-				xmlpersons.ele("person", "FIXME");
-
+				desc.groups.forEach((group) => {
+					xmlpersons.ele("person", group);
+				});
+				desc.people.forEach((person) => {
+					xmlpersons.ele("person", person);
+				});
 				eventId++;
 			});
 	});
