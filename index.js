@@ -78,7 +78,14 @@ comp.getAllSubcomponents("vevent").forEach(vevent => {
 		if (typeof DATES[key] === "undefined") {
 			DATES[key] = [];
 		}
-		DATES[key].push({ start: nextStartDate, event: event });
+
+		let hasException = DATES[key].some((obj) => {
+			return obj.event.isRecurrenceException() && ~obj.start === ~nextStartDate;
+		})
+
+		if (!hasException) {
+			DATES[key].push({ start: nextStartDate, event: event });
+		}
 	}
 });
 
