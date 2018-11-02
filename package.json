@@ -1,0 +1,12 @@
+{
+  "name": "ical2schedule",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "ical.js": "^1.2.2",
+    "luxon": "^1.4.5",
+    "xmlbuilder": "^10.1.1"
+  }
+}
