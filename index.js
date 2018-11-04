@@ -142,6 +142,11 @@ const parseDescription = description => {
 
 Object.keys(DATES)
 	.sort()
+	.filter(key => {
+		return !DATES[key].every(obj => {
+			return obj.event.summary == "Busy";
+		});
+	})
 	.forEach(function(key) {
 		var xmlday = schedulexml.ele("day");
 		xmlday.att("index", "1");
