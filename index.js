@@ -7,6 +7,8 @@ const TZ = "Europe/Berlin";
 Settings.defaultZoneName = TZ;
 
 const DEFAULT_ROOM = "Salon";
+// FILTER_START: set to null if all events should be used
+const FILTER_START = DateTime.local().startOf('month');
 
 var data = fs.readFileSync("basic.ics", "utf8");
 
@@ -145,6 +147,12 @@ const parseDescription = description => {
 
 Object.keys(DATES)
 	.sort()
+	.filter(key => {
+		if (FILTER_START === null) {
+			return true;
+		}
+		return DateTime.fromISO(key) > FILTER_START;
+	})
 	.filter(key => {
 		return !DATES[key].every(obj => {
 			return obj.event.summary == "Busy";
