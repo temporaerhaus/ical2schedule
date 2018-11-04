@@ -96,21 +96,13 @@ comp.getAllSubcomponents("vevent").forEach(vevent => {
 
 const parseDescription = description => {
 	let room = DEFAULT_ROOM;
-	let subtitle = description;
-	let subMatch = description.match(/^\u{1F5A5}\s*(.+)$/gmu);
-	if (subMatch) {
-		subtitle = subMatch[subMatch.length - 1]
-			.replace(/\u{1F5A5}\s*/u, "")
-			.trim();
-		description.replace(subMatch[subMatch.length - 1], "");
-	}
 
 	let roomMatch = description.match(/^\u{1F4CD}\s*(.+)$/gmu);
 	if (roomMatch) {
 		room = roomMatch[roomMatch.length - 1]
 			.replace(/\u{1F4CD}\s*/u, "")
 			.trim();
-		description.replace(roomMatch[roomMatch.length - 1], "");
+		description = description.replace(roomMatch[roomMatch.length - 1], "");
 	}
 
 	let groups = [];
@@ -118,7 +110,7 @@ const parseDescription = description => {
 	if (groupMatch) {
 		groupMatch.forEach(m => {
 			groups.push(m.replace(/\u{1F3E2}\s*/u, "").trim());
-			description.replace(m, "");
+			description = description.replace(m, "");
 		});
 	}
 
@@ -127,9 +119,20 @@ const parseDescription = description => {
 	if (personMatch) {
 		personMatch.forEach(p => {
 			people.push(p.replace(/\u{1F642}\s*/u, "").trim());
-			description.replace(p, "");
+			description = description.replace(p, "");
 		});
 	}
+
+	let subtitle = description.trim();
+	let subMatch = description.match(/^\u{1F5A5}\s*(.+)$/gmu);
+	if (subMatch) {
+		subtitle = subMatch[subMatch.length - 1]
+			.replace(/\u{1F5A5}\s*/u, "")
+			.trim();
+		description = description.replace(subMatch[subMatch.length - 1], "");
+	}
+
+	description = description.trim();
 
 	return {
 		description: description,
