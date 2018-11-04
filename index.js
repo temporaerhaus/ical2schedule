@@ -6,6 +6,8 @@ const { Settings, DateTime } = require("luxon");
 const TZ = "Europe/Berlin";
 Settings.defaultZoneName = TZ;
 
+const DEFAULT_ROOM = "Salon";
+
 var data = fs.readFileSync("basic.ics", "utf8");
 
 var jCalData = ICAL.parse(data);
@@ -79,9 +81,12 @@ comp.getAllSubcomponents("vevent").forEach(vevent => {
 			DATES[key] = [];
 		}
 
-		let hasException = DATES[key].some((obj) => {
-			return obj.event.isRecurrenceException() && ~obj.start === ~nextStartDate;
-		})
+		let hasException = DATES[key].some(obj => {
+			return (
+				obj.event.isRecurrenceException() &&
+				~obj.start === ~nextStartDate
+			);
+		});
 
 		if (!hasException) {
 			DATES[key].push({ start: nextStartDate, event: event });
@@ -89,38 +94,50 @@ comp.getAllSubcomponents("vevent").forEach(vevent => {
 	}
 });
 
-const parseDescription = (description) => {
+const parseDescription = description => {
+	let room = DEFAULT_ROOM;
 	let subtitle = description;
-	let subMatch = description.match(/^\u{1F5A5}\s*(.+)$/umg);
+	let subMatch = description.match(/^\u{1F5A5}\s*(.+)$/gmu);
 	if (subMatch) {
-		subtitle = subMatch[subMatch.length - 1].replace(/\u{1F5A5}\s*/u, '').trim();
-		description.replace(subMatch[subMatch.length - 1], '');
+		subtitle = subMatch[subMatch.length - 1]
+			.replace(/\u{1F5A5}\s*/u, "")
+			.trim();
+		description.replace(subMatch[subMatch.length - 1], "");
+	}
+
+	let roomMatch = description.match(/^\u{1F4CD}\s*(.+)$/gmu);
+	if (roomMatch) {
+		room = roomMatch[roomMatch.length - 1]
+			.replace(/\u{1F4CD}\s*/u, "")
+			.trim();
+		description.replace(roomMatch[roomMatch.length - 1], "");
 	}
 
 	let groups = [];
-	let groupMatch = description.match(/^\u{1F3E2}\s*(.+)$/mug);
+	let groupMatch = description.match(/^\u{1F3E2}\s*(.+)$/gmu);
 	if (groupMatch) {
-		groupMatch.forEach((m) => {
-			groups.push(m.replace(/\u{1F3E2}\s*/u, '').trim());
-			description.replace(m, '');
+		groupMatch.forEach(m => {
+			groups.push(m.replace(/\u{1F3E2}\s*/u, "").trim());
+			description.replace(m, "");
 		});
 	}
 
 	let people = [];
-	let personMatch = description.match(/^\u{1F642}\s*(.+)$/mug);
+	let personMatch = description.match(/^\u{1F642}\s*(.+)$/gmu);
 	if (personMatch) {
-		personMatch.forEach((p) => {
-			people.push(p.replace(/\u{1F642}\s*/u, '').trim());
-			description.replace(p, '');
+		personMatch.forEach(p => {
+			people.push(p.replace(/\u{1F642}\s*/u, "").trim());
+			description.replace(p, "");
 		});
 	}
 
 	return {
 		description: description,
 		subtitle: subtitle,
+		room: room,
 		groups: groups,
 		people: people
-	}
+	};
 };
 
 Object.keys(DATES)
@@ -160,7 +177,9 @@ Object.keys(DATES)
 				var xmlevent = xmlroom.ele("event");
 				xmlevent.att(
 					"id",
-					startOfDay.toFormat("LLdd") + (eventId < 10 ? "0" : "") + eventId
+					startOfDay.toFormat("LLdd") +
+						(eventId < 10 ? "0" : "") +
+						eventId
 				);
 
 				// calculate duration with the real event timestamps (not the repeated one)
@@ -189,14 +208,14 @@ Object.keys(DATES)
 					realStartDate.toLocaleString(DateTime.TIME_24_SIMPLE)
 				);
 				xmlevent.ele("duration", diff.toFormat("hh:mm"));
-				xmlevent.ele("room", "Salon");
+				xmlevent.ele("room", desc.room);
 				xmlevent.ele("title", event.summary);
 				xmlevent.ele("subtitle", desc.subtitle);
 				var xmlpersons = xmlevent.ele("persons");
-				desc.groups.forEach((group) => {
+				desc.groups.forEach(group => {
 					xmlpersons.ele("person", group);
 				});
-				desc.people.forEach((person) => {
+				desc.people.forEach(person => {
 					xmlpersons.ele("person", person);
 				});
 				eventId++;
