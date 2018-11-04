@@ -218,6 +218,15 @@ Object.keys(DATES)
 
 				let desc = parseDescription(event.description);
 
+				if (desc.description.length == 0) {
+					console.warn(realStartDate.toISO(), event.summary, "Description empty");
+				} else if (desc.description == desc.subtitle) {
+					console.warn(realStartDate.toISO(), event.summary, "Subtitle override missing");
+				}
+				if (desc.groups.length == 0 && desc.people.length == 0) {
+					console.warn(realStartDate.toISO(), event.summary, "People missing");
+				}
+
 				xmlevent.ele("date", realStartDate.toISO());
 				xmlevent.ele(
 					"start",
