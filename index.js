@@ -49,14 +49,14 @@ var begin = sortedDates[0];
 var end = sortedDates[sortedDates.length - 1];
 
 var beginDT = DateTime.fromISO(begin);
-var endDT = DateTime.fromISO(end);
+var endDT = DateTime.fromISO(end).endOf("year");
 
-conference.ele("start", begin);
-conference.ele("end", end);
+conference.ele("start", beginDT.toISODate());
+conference.ele("end", endDT.toISODate());
 
 var diff = endDT.diff(beginDT, ["days"]);
 
-conference.ele("days", diff.days);
+conference.ele("days", Math.ceil(diff.days));
 conference.ele("timeslot_duration", "00:15");
 
 // add recurring events
