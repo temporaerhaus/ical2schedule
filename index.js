@@ -20,8 +20,6 @@ var DATES = {};
 comp.getAllSubcomponents("vevent").forEach(vevent => {
 	var event = new ICAL.Event(vevent);
 
-	if (event.startDate.toJSDate().getFullYear() != 2018) return;
-
 	if (event.isRecurring()) {
 		// recurring events get handled below
 		return;
