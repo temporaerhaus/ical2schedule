@@ -1,6 +1,7 @@
 const fs = require("fs");
 const ICAL = require("ical.js");
 const xmlbuilder = require("xmlbuilder");
+const sanitizeHtml = require("sanitize-html");
 const { Settings, DateTime } = require("luxon");
 
 const TZ = "Europe/Berlin";
@@ -97,6 +98,10 @@ comp.getAllSubcomponents("vevent").forEach(vevent => {
 const parseDescription = description => {
 	let room = DEFAULT_ROOM;
 
+	description = sanitizeHtml(description, { allowedTags: ['br'] })
+				  .replace(/\<br\s*\/?\>/g, "\n")
+				  .trim();
+
 	let roomMatch = description.match(/^\u{1F4CD}\s*(.+)$/gmu);
 	if (roomMatch) {
 		room = roomMatch[roomMatch.length - 1]
@@ -149,7 +154,7 @@ Object.keys(DATES)
 		if (FILTER_START === null) {
 			return true;
 		}
-		return DateTime.fromISO(key) > FILTER_START;
+		return DateTime.fromISO(key) >= FILTER_START;
 	})
 	.filter(key => {
 		return !DATES[key].every(obj => {

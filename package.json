@@ -7,6 +7,7 @@
   "dependencies": {
     "ical.js": "^1.2.2",
     "luxon": "^1.4.5",
+    "sanitize-html": "^1.20.0",
     "xmlbuilder": "^10.1.1"
   }
 }
