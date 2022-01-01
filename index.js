@@ -37,27 +37,6 @@ comp.getAllSubcomponents("vevent").forEach(vevent => {
 	DATES[key].push({ start: startDate, event: event });
 });
 
-var schedulexml = xmlbuilder.create("schedule");
-schedulexml.ele("version", 1);
-var conference = schedulexml.ele("conference");
-conference.ele("acronym", "VSH");
-conference.ele("title", "Verschwörhaus");
-
-var sortedDates = Object.keys(DATES).sort();
-var begin = sortedDates[0];
-var end = sortedDates[sortedDates.length - 1];
-
-var beginDT = DateTime.fromISO(begin);
-var endDT = DateTime.fromISO(end).endOf("year");
-
-conference.ele("start", beginDT.toISODate());
-conference.ele("end", endDT.toISODate());
-
-var diff = endDT.diff(beginDT, ["days"]);
-
-conference.ele("days", Math.ceil(diff.days));
-conference.ele("timeslot_duration", "00:15");
-
 // add recurring events
 comp.getAllSubcomponents("vevent").forEach(vevent => {
 	var event = new ICAL.Event(vevent);
@@ -147,6 +126,27 @@ const parseDescription = description => {
 		people: people
 	};
 };
+
+var schedulexml = xmlbuilder.create("schedule");
+schedulexml.ele("version", 1);
+var conference = schedulexml.ele("conference");
+conference.ele("acronym", "VSH");
+conference.ele("title", "Verschwörhaus");
+
+var sortedDates = Object.keys(DATES).sort();
+var begin = sortedDates[0];
+var end = sortedDates[sortedDates.length - 1];
+
+var beginDT = DateTime.fromISO(begin);
+var endDT = DateTime.fromISO(end).endOf("year");
+
+conference.ele("start", beginDT.toISODate());
+conference.ele("end", endDT.toISODate());
+
+var diff = endDT.diff(beginDT, ["days"]);
+
+conference.ele("days", Math.ceil(diff.days));
+conference.ele("timeslot_duration", "00:15");
 
 Object.keys(DATES)
 	.sort()
