@@ -47,12 +47,15 @@ comp.getAllSubcomponents("vevent").forEach(vevent => {
 
 	var expand = event.iterator();
 
-	var next;
+	var eventEndOfYearOfFirstStartDate, next;
 	while ((next = expand.next())) {
 		let nextStartDate = DateTime.fromJSDate(next.toJSDate(), {
 			zone: TZ
 		});
-		if (nextStartDate > endDT) {
+		if (!eventEndOfYearOfFirstStartDate) {
+			eventEndOfYearOfFirstStartDate = nextStartDate.endOf("year");
+		}
+		if (nextStartDate > eventEndOfYearOfFirstStartDate) {
 			break;
 		}
 
