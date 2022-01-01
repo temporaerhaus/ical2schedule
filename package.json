@@ -5,9 +5,9 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "ical.js": "^1.2.2",
+    "ical.js": "^1.4",
     "luxon": "^1.4.5",
-    "sanitize-html": "^1.20.0",
+    "sanitize-html": "^2.6.1",
     "xmlbuilder": "^10.1.1"
   }
 }

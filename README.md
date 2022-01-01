@@ -9,7 +9,7 @@ The code is not tested, makes quite much verschwoerhaus-only assumptions and cou
 Usage
 -----
 
-* `yarn install`
+* `npm install`
 * download the [`basic.ics`](https://calendar.google.com/calendar/ical/slaun4l80uh2s0ototiol4qkgo%40group.calendar.google.com/public/basic.ics) and put it in the same directory
 * `node index.js`
 * look into the created `schedule.xml`
