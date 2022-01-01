@@ -148,6 +148,8 @@ var diff = endDT.diff(beginDT, ["days"]);
 conference.ele("days", Math.ceil(diff.days));
 conference.ele("timeslot_duration", "00:15");
 
+var xmlDayIndex = 0;
+
 Object.keys(DATES)
 	.sort()
 	.filter(key => {
@@ -163,7 +165,7 @@ Object.keys(DATES)
 	})
 	.forEach(function(key) {
 		var xmlday = schedulexml.ele("day");
-		xmlday.att("index", "1");
+		xmlday.att("index", ++xmlDayIndex);
 		xmlday.att("date", key);
 		let startOfDay = DateTime.fromISO(key).set({ hour: 7 });
 		xmlday.att("start", startOfDay.toISO());
