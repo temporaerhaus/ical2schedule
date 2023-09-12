@@ -133,8 +133,8 @@ const parseDescription = description => {
 var schedulexml = xmlbuilder.create("schedule");
 schedulexml.ele("version", 1);
 var conference = schedulexml.ele("conference");
-conference.ele("acronym", "VSH");
-conference.ele("title", "Verschwörhaus");
+conference.ele("acronym", "TPH");
+conference.ele("title", "temporärhaus");
 
 var sortedDates = Object.keys(DATES).sort();
 var begin = sortedDates[0];
@@ -178,7 +178,7 @@ Object.keys(DATES)
 		xmlday.att("end", endOfDay.toISO());
 
 		var xmlroom = xmlday.ele("room");
-		xmlroom.att("name", "Verschwörhaus");
+		xmlroom.att("name", "temporärhaus");
 
 		var eventId = 1;
 
