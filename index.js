@@ -53,7 +53,7 @@ comp.getAllSubcomponents("vevent").forEach(vevent => {
 			zone: TZ
 		});
 		if (!eventEndOfYearOfFirstStartDate) {
-			eventEndOfYearOfFirstStartDate = nextStartDate.endOf("year");
+			eventEndOfYearOfFirstStartDate = nextStartDate.plus({ years: 1 }).endOf("year");
 		}
 		if (nextStartDate > eventEndOfYearOfFirstStartDate) {
 			break;
