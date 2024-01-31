@@ -225,6 +225,10 @@ Object.keys(DATES)
 				]);
 
 				let desc = parseDescription(event.description);
+				const room = event._firstProp('categories');
+                if (room && desc.room === DEFAULT_ROOM) {
+                    desc.room = room;
+                }
 
 				if (desc.description.length == 0) {
 					console.warn(realStartDate.toISO(), event.summary, "Description empty");
